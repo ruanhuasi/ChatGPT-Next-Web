@@ -2,8 +2,8 @@
 // azure and openai, using same models. so using same LLMApi.
 import {
   ApiPath,
-  DEEPSEEK_BASE_URL,
-  DeepSeek,
+  SILICONFLOW_BASE_URL,
+  SiliconFlow,
   REQUEST_TIMEOUT_MS,
 } from "@/app/constant";
 import {
@@ -29,7 +29,7 @@ import {
 import { RequestPayload } from "./openai";
 import { fetch } from "@/app/utils/stream";
 
-export class DeepSeekApi implements LLMApi {
+export class SiliconflowApi implements LLMApi {
   private disableListModels = true;
 
   path(path: string): string {
@@ -38,19 +38,22 @@ export class DeepSeekApi implements LLMApi {
     let baseUrl = "";
 
     if (accessStore.useCustomConfig) {
-      baseUrl = accessStore.deepseekUrl;
+      baseUrl = accessStore.siliconflowUrl;
     }
 
     if (baseUrl.length === 0) {
       const isApp = !!getClientConfig()?.isApp;
-      const apiPath = ApiPath.DeepSeek;
-      baseUrl = isApp ? DEEPSEEK_BASE_URL : apiPath;
+      const apiPath = ApiPath.SiliconFlow;
+      baseUrl = isApp ? SILICONFLOW_BASE_URL : apiPath;
     }
 
     if (baseUrl.endsWith("/")) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.DeepSeek)) {
+    if (
+      !baseUrl.startsWith("http") &&
+      !baseUrl.startsWith(ApiPath.SiliconFlow)
+    ) {
       baseUrl = "https://" + baseUrl;
     }
 
@@ -107,7 +110,7 @@ export class DeepSeekApi implements LLMApi {
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(DeepSeek.ChatPath);
+      const chatPath = this.path(SiliconFlow.ChatPath);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
